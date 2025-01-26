@@ -21,16 +21,5 @@ public partial class Student
 
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
-    public static void GetStudent()
-    {
-        using (var context = new LabbSchoolContext())
-        {
-            var allStudents = context.Students;
-
-            foreach (var student in allStudents)
-            {
-                Console.WriteLine($"{student.FirstName} + {student.LastName}");
-            }
-        }
-    }
+    
 }

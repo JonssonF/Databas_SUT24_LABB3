@@ -10,19 +10,20 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             while (menuBool)
             {
                 Console.Clear();
+                Console.WriteLine("(BETA)-- This application is under development.\n\n");
                 Console.WriteLine("Hello and welcome to the School's data navigation system.");
-                Console.WriteLine($"Please choose a option below:\n");
+                Console.WriteLine($"In wich section do you seek knowledge:\n");
                 Console.WriteLine(
-                    "1.\n" +
-                    "2.\n" +
-                    "3.\n" +
+                    "1.Student\n" +
+                    "2.Staff\n" +
+                    "3.Classes\n" +
                     "4.Exit program.");
-                int userChoice = Choice(4);
+                int userChoice = General.Choice(4);
                 switch (userChoice)
                 {
                     case 1:
                         Console.Clear();
-                        Student.GetStudent();
+                        Case1.CaseOne();
                         Console.ReadLine();
                         break;
                     case 2:
@@ -50,26 +51,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 
 
 
-        public static int Choice(int max) // Method to only accept valid keypress.
-        {
-            bool isNumber;
-            int num = 0;
-            do
-            {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-
-                // Checks if the choice is a number
-                // If it is, converts keypress
-                // into an int. 
-                isNumber = char.IsAsciiDigit(key.KeyChar);
-                if (isNumber)
-                {
-                    num = Convert.ToInt32(key.KeyChar.ToString());
-                }
-
-            } while (!isNumber || num > max || num == 0); // exits while loop only if number is not bigger
-                                                          // than the max index of the active users accounts.
-            return num;
-        }
+        
     }
 }
