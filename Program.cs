@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using FREDRIK_JONSSON_SUT24_LABB3.Menu;
+using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using Microsoft.Data.SqlClient;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3
 {
@@ -6,13 +8,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
     {
         static void Main(string[] args)
         {
-            var connectionString = @"Data Source = localhost; Initial Catalog = LabbSchool; Integrated Security = true;";
-
-            SqlConnection connection = new SqlConnection(connectionString);
-            connection.Open();
-
-
-
+             Menu.Menu.Start();
         }
     }
 }
