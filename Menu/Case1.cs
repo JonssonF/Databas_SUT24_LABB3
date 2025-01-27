@@ -36,7 +36,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Menu.Start();
                         break;
                     default:
-                        Console.WriteLine("Plase try again. Make sure you write an integer between 1-3.");
+                        Console.WriteLine("Plase try again. Make sure you write an integer between 1-4.");
                         break;
                 }
             }
@@ -164,8 +164,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 
         public static IQueryable<Student> SortStudents(IQueryable<Student> students)
         {
-            using (var context = new LabbSchoolContext())
-            {
                 Console.Write("How would you like to sort the students:\n1. By firstname\n2. By lastname \nOption:");
                 int sortChoice = General.Choice(2);
                 Console.Write(sortChoice);
@@ -188,6 +186,5 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
                 return students;
             }
-        }
     }
 }
