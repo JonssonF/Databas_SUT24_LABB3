@@ -1,4 +1,5 @@
 ﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using System.Security.Principal;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
@@ -63,7 +64,86 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 
         public static void AddStaff()
         {
-            Console.WriteLine("Hejsan vilken perosnal vill du lägga till mannen brusch?!");
+            try
+            {
+                using (var context = new LabbSchoolContext())
+                {
+                    Console.WriteLine("Welcome to our employee registration.");
+                    Console.WriteLine("\n\nPlease enter following information about our new member of this school.");
+                    Console.Write("\nFirstname: ");
+                    string firstName = Console.ReadLine();
+                    Console.Write("\nLastname: ");
+                    string lastName = Console.ReadLine();
+                    Console.Write("\nEmail-Adress: ");
+                    string email = Console.ReadLine();
+
+                    DateOnly? dob = null;
+                    int tries = 0;
+                    bool dateCheck = true;
+                    while (dateCheck)
+                    {
+                        Console.Write("\nDate of Birth (YYYY-MM-DD): ");
+                        if (tries < 3)
+                        {
+                            string input = Console.ReadLine();
+
+                            if (DateOnly.TryParse(input, out DateOnly parsedDate))
+                            {
+                                dob = parsedDate;
+                                break;
+                            }
+                            else
+                            {
+                                tries++;
+                                Console.WriteLine($"The date was in the wrong format, please try again. You have made {tries}/3 attempts.");
+                            }
+                        }
+                    }
+                    Console.WriteLine("\nWhich role will you have when you start your employment?");
+                    var staff = context.Staff.AsQueryable();
+                    var uniqueRoles = staff.Select(s => s.Role).Distinct();
+                    Console.WriteLine(new string('-', 55));
+                    List<string> validRoles = new List<string>();
+                    foreach (var position in uniqueRoles)
+                    {
+                        Console.WriteLine($"{position}.");
+                        validRoles.Add(position);
+                    }
+                    string role = string.Empty;
+                    while (!validRoles.Contains(role))
+                    {
+                        Console.Write("\nRole: ");
+                        role = Console.ReadLine();
+
+                        if (!validRoles.Contains(role))
+                        {
+                            Console.WriteLine("Unvalid position. Choose from the list above and try again.");
+                        }
+                    }
+                    var newStaff = new Staff
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = email,
+                        DoB = dob,
+                        Role = role
+                    };
+
+                    context.Staff.Add(newStaff);
+                    context.SaveChanges();
+
+                    Console.WriteLine($"\n\nWelcome to our team {firstName}!\nI hope you will enjoy it here at our school.");
+
+                    Console.Write("\n\nPress any key to return to the menu.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine("Something went wrong, please try again.");
+                AddStaff();
+            }
         }
     }
 }
