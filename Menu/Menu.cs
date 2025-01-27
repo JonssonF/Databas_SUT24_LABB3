@@ -28,7 +28,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         break;
                     case 2:
                         Console.Clear();
-                        Console.WriteLine("Testa tvåan");
+                        Case2.CaseTwo();    
                         Console.ReadLine();
                         break;
                     case 3:
