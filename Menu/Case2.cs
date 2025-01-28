@@ -98,6 +98,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                                 Console.WriteLine($"The date was in the wrong format, please try again. You have made {tries}/3 attempts.");
                             }
                         }
+                        else
+                        {
+                            dateCheck = false;
+                            Console.WriteLine("Failed to add new employees.");
+                            Thread.Sleep(2000);
+                            CaseTwo();
+                        }
                     }
                     Console.WriteLine("\nWhich role will you have when you start your employment?");
                     var staff = context.Staff.AsQueryable();
