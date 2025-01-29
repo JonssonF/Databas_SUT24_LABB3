@@ -10,7 +10,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             bool caseTwo = true;
             while (caseTwo)
             {
-                Console.WriteLine($"Welcome to the staff section, what can i help you with:\n" +
+                General.Heading();
+                Console.WriteLine($"\nWelcome to the staff section, what can i help you with:\n" +
                     "\n1. List all employees." +
                     "\n2. Add new employee." +
                     "\n3. Return to main menu.");
@@ -33,9 +34,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     default:
                         Console.WriteLine("Plase try again. Make sure you write an integer between 1-4.");
                         break;
-
                 }
-
             }
         }
 
@@ -101,8 +100,9 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         else
                         {
                             dateCheck = false;
-                            Console.WriteLine("Failed to add new employees.");
+                            Console.WriteLine("Was in the wrong format. Failed to add new employees.");
                             Thread.Sleep(2000);
+                            Console.Clear();
                             CaseTwo();
                         }
                     }
@@ -138,8 +138,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 
                     context.Staff.Add(newStaff);
                     context.SaveChanges();
-
-                    Console.WriteLine($"\n\nWelcome to our team {firstName}!\nI hope you will enjoy it here at our school.");
+                    Console.WriteLine(new string('-', 55));
+                    Console.WriteLine($"\nWelcome to our team {firstName}!\nI hope you will enjoy it here at our school.");
 
                     Console.Write("\n\nPress any key to return to the menu.");
                     Console.ReadKey();

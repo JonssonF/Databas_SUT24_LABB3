@@ -10,6 +10,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             while (menuBool)
             {
                 Console.Clear();
+                General.Heading();
                 Console.WriteLine("(BETA)-- This application is under development.\n\n");
                 Console.WriteLine("Hello and welcome to the School's data navigation system.");
                 Console.WriteLine($"In wich section do you seek knowledge:\n");
@@ -33,7 +34,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         break;
                     case 3:
                         Console.Clear();
-                        Console.WriteLine("Testa trean");
+                        Console.WriteLine("Stay tuned for more. . .");
                         Console.ReadLine();
                         break;
                     case 4:
@@ -48,9 +49,5 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
             }
         }
-
-
-
-        
     }
 }
