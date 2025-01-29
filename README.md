@@ -23,7 +23,7 @@ This is a small school database application developed as part of a course projec
 
 ## Screenshots
 
-![Database Screenshot](path/to/your/screenshot.png)
+![Database Screenshot](https://github.com/JonssonF/Databas_SUT24_LABB3/blob/main/ER%20Labb3.drawio.pdf)
 
 ## License
 This project is licensed under the MIT License.
