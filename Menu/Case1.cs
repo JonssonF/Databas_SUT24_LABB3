@@ -10,7 +10,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             bool CaseOne = true;
             while (CaseOne)
             {
-                Console.WriteLine($"Welcome to the student section, what can i help you with:\n" +
+                General.Heading();
+                Console.WriteLine($"\nWelcome to the student section, what can i help you with:\n" +
                     "\n1. List all students." +
                     "\n2. Information about specific student." +
                     "\n3. Students by class." +
@@ -36,7 +37,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Menu.Start();
                         break;
                     default:
-                        Console.WriteLine("Plase try again. Make sure you write an integer between 1-4.");
+                        Console.WriteLine("Please try again. Make sure you write an integer between 1-4.");
                         break;
                 }
             }
@@ -62,7 +63,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
                 Console.Write("\n\nPress any key to return to the menu.");
                 Console.ReadKey();
-                Console.Clear();
+                General.ClearAll();
             }
         }
 
