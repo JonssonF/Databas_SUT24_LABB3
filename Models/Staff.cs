@@ -19,6 +19,8 @@ public partial class Staff
 
     public int? DepartmentId { get; set; }
 
+    public DateOnly HireDate { get; set; }
+
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
     public virtual Department? Department { get; set; }

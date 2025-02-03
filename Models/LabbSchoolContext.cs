@@ -115,6 +115,7 @@ public partial class LabbSchoolContext : DbContext
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.HireDate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false);

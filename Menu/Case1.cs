@@ -117,9 +117,9 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 var classes = context.Classes;
                 int nrClasses = context.Classes.Count();
                 int count = 0;
-                Console.WriteLine($"Currently, we have {nrClasses} classes at this school.");
-                Console.WriteLine("Please choose a class to view the list of students.\n");
-
+                Console.WriteLine($"\nCurrently, we have {nrClasses} classes at this school.");
+                Console.WriteLine("Please choose a class to view the list of students.");
+                Console.WriteLine(new string('-', 50));
                 foreach (var c in classes)
                 {
                     Console.Write($"{c.ClassName},");
@@ -131,11 +131,11 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Console.WriteLine();
                     }
                 }
-                Console.Write($"\nOption: ");
+                Console.WriteLine(new string('-', 50));
+                Console.Write($"Option: ");
                 string option = Console.ReadLine();
                 General.Process();
-                Console.Clear();
-
+                General.ClearAll();
                 var selectedClass = classes.FirstOrDefault(c => c.ClassName.Equals(option));
                 if (selectedClass != null)
                 {
@@ -144,6 +144,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                      .AsQueryable();
 
                     studentsInClass = SortStudents(studentsInClass);
+                    General.ClearAll();
+                    General.Heading();
 
                     Console.WriteLine($"Students in class {selectedClass.ClassName}.");
                     Console.WriteLine(new string('-', 35));

@@ -44,8 +44,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             {
                 var staff = context.Staff.AsQueryable();
                 Console.Clear();
-                Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}{".:Position:.".PadRight(15)}");
-                Console.WriteLine(new string('-', 50));
+                Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}{".:Position:.".PadRight(20)}{".:Hired:.".PadRight(15)}");
+                Console.WriteLine(new string('-', 67));
 
                 foreach (var employee in staff)
                 {
@@ -53,7 +53,9 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"  {employee.StaffId.ToString().PadRight(6)}" +
                         $"{employee.FirstName.PadRight(15)}" +
                         $"{employee.LastName.PadRight(15)}" +
-                        $"{employee.Role.PadRight(15)}");
+                        $"{employee.Role.PadRight(18)}" +
+                        $"{employee.HireDate.ToString().PadRight(15)}");
+                        Console.WriteLine(new string('-', 67));
                 }
                 General.Return();
             }
