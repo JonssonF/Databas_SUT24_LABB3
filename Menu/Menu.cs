@@ -40,7 +40,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         break;
                     case 4:
                         Console.Clear();
-                        Case3.CaseFour();
+                        Case4.CaseFour();
                         Console.ReadLine();
                         break;
                     case 5:
