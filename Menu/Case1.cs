@@ -1,4 +1,5 @@
 ﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
@@ -78,7 +79,10 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 General.Process();
                 if (int.TryParse(userInputString, out int userInput)) 
                 { 
-                    var specStudent = context.Students.FirstOrDefault(student => student.StudentId == userInput);
+                    var specStudent = context.Students
+                        .Include(s => s.Classes)
+                        .FirstOrDefault(student => student.StudentId == userInput);
+
                     if (specStudent != null)
                     {
                         Console.WriteLine("We have a match!");
@@ -90,7 +94,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                             $".:Firstname: {specStudent.FirstName}\n" +
                             $".:Lastname: {specStudent.LastName}\n" +
                             $".:Date of birth: {specStudent.DoB}\n" +
-                            $".:Email adress: {specStudent.Email}");
+                            $".:Email adress: {specStudent.Email}\n" +
+                            $".:Class: {string.Join(", ", specStudent.Classes.Select(c => c.ClassName))}");
                     }
                     else
                     {
@@ -106,6 +111,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
         public static void ByClass()
         {
             Console.Clear();
+            General.Heading();
             using (var context = new LabbSchoolContext())
             {
                 var classes = context.Classes;

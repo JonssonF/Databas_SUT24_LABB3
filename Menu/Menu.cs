@@ -17,7 +17,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 Console.WriteLine(
                     "1.Student\n" +
                     "2.Staff\n" +
-                    "3.Classes\n" +
+                    "3.Departments\n" +
                     "4.Exit program");
                 int userChoice = General.Choice(4);
                 switch (userChoice)
