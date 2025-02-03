@@ -1,9 +1,10 @@
 ﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
-    public class Case1
+    public class Case1 // Students
     {
         public static void CaseOne()
         {
@@ -12,10 +13,10 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             {
                 General.Heading();
                 Console.WriteLine($"\nWelcome to the student section, what can i help you with:\n" +
-                    "\n1. List all students." +
-                    "\n2. Information about specific student." +
-                    "\n3. Students by class." +
-                    "\n4. Return to main menu.");
+                    "\n1. List all students" +
+                    "\n2. Information about specific student" +
+                    "\n3. Students by class" +
+                    "\n4. Return to main menu");
                 int userChoice = General.Choice(4);
                 switch (userChoice)
                 {
@@ -51,6 +52,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 students = SortStudents(students);
                
                 Console.Clear();
+                General.Heading();
+
                 Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}");
                 Console.WriteLine(new string('-',35));
                 
@@ -61,9 +64,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"{student.FirstName.PadRight(15)}" +
                         $"{student.LastName.PadRight(15)}");
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                General.ClearAll();
+                General.Return();
             }
         }
 
@@ -71,24 +72,30 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
         {
             using (var context = new LabbSchoolContext())
             {
+                General.Heading();
                 Console.Write("Please write the specific ID of the student you would like to find.\n\nStudent ID: ");
                 string userInputString = Console.ReadLine();
 
                 General.Process();
                 if (int.TryParse(userInputString, out int userInput)) 
                 { 
-                    var specStudent = context.Students.FirstOrDefault(student => student.StudentId == userInput);
+                    var specStudent = context.Students
+                        .Include(s => s.Classes)
+                        .FirstOrDefault(student => student.StudentId == userInput);
+
                     if (specStudent != null)
                     {
                         Console.WriteLine("We have a match!");
                         Thread.Sleep(1500);
                         Console.Clear();
+                        General.Heading();
                         Console.WriteLine(
                             $".:ID: {specStudent.StudentId}\n" +
                             $".:Firstname: {specStudent.FirstName}\n" +
                             $".:Lastname: {specStudent.LastName}\n" +
                             $".:Date of birth: {specStudent.DoB}\n" +
-                            $".:Email adress: {specStudent.Email}");
+                            $".:Email adress: {specStudent.Email}\n" +
+                            $".:Class: {string.Join(", ", specStudent.Classes.Select(c => c.ClassName))}");
                     }
                     else
                     {
@@ -97,23 +104,22 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                                 $"If you are unsure of the ID, feel free to look at the student list.");
                     }
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                Console.Clear();
+                General.Return();
             }
         }
 
         public static void ByClass()
         {
             Console.Clear();
+            General.Heading();
             using (var context = new LabbSchoolContext())
             {
                 var classes = context.Classes;
                 int nrClasses = context.Classes.Count();
                 int count = 0;
-                Console.WriteLine($"Currently, we have {nrClasses} classes at this school.");
-                Console.WriteLine("Please choose a class to view the list of students.\n");
-
+                Console.WriteLine($"\nCurrently, we have {nrClasses} classes at this school.");
+                Console.WriteLine("Please choose a class to view the list of students.");
+                Console.WriteLine(new string('-', 50));
                 foreach (var c in classes)
                 {
                     Console.Write($"{c.ClassName},");
@@ -125,12 +131,11 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Console.WriteLine();
                     }
                 }
-                Console.Write($"\nOption: ");
+                Console.WriteLine(new string('-', 50));
+                Console.Write($"Option: ");
                 string option = Console.ReadLine();
-                //Console.Write($"{option}\n");
                 General.Process();
-                Console.Clear();
-
+                General.ClearAll();
                 var selectedClass = classes.FirstOrDefault(c => c.ClassName.Equals(option));
                 if (selectedClass != null)
                 {
@@ -139,6 +144,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                      .AsQueryable();
 
                     studentsInClass = SortStudents(studentsInClass);
+                    General.ClearAll();
+                    General.Heading();
 
                     Console.WriteLine($"Students in class {selectedClass.ClassName}.");
                     Console.WriteLine(new string('-', 35));
@@ -157,14 +164,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Console.WriteLine($"Sorry i could not find what you were searching for.\n" +
                             $"If you are unsure of the classname, feel free to look at the list and try again.");
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                Console.Clear();
+                General.Return();
             }
         }
 
         public static IQueryable<Student> SortStudents(IQueryable<Student> students)
         {
+                General.Heading();
                 Console.Write("How would you like to sort the students:\n1. By firstname\n2. By lastname \nOption:");
                 int sortChoice = General.Choice(2);
                 Console.Write(sortChoice);

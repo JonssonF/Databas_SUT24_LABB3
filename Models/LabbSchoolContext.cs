@@ -17,6 +17,8 @@ public partial class LabbSchoolContext : DbContext
 
     public virtual DbSet<Class> Classes { get; set; }
 
+    public virtual DbSet<Department> Departments { get; set; }
+
     public virtual DbSet<Grade> Grades { get; set; }
 
     public virtual DbSet<Staff> Staff { get; set; }
@@ -65,6 +67,18 @@ public partial class LabbSchoolContext : DbContext
                     });
         });
 
+        modelBuilder.Entity<Department>(entity =>
+        {
+            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BED8A458912");
+
+            entity.ToTable("Department");
+
+            entity.Property(e => e.DepartmentName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Salary).HasColumnType("decimal(10, 2)");
+        });
+
         modelBuilder.Entity<Grade>(entity =>
         {
             entity.HasKey(e => e.GradeId).HasName("PK__Grade__54F87A5770105BE9");
@@ -94,18 +108,24 @@ public partial class LabbSchoolContext : DbContext
         {
             entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AB17FC049217");
 
+            entity.Property(e => e.DepartmentId).HasColumnName("Department_Id");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.HireDate).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Role)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Department).WithMany(p => p.Staff)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("FK__Staff__Departmen__5CD6CB2B");
         });
 
         modelBuilder.Entity<Student>(entity =>
