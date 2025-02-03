@@ -52,11 +52,11 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         TeacherCount = g.Count()
                     })
                     .ToList();
-                Console.WriteLine($"{".:Department:.".PadRight(15)}{".:Count:.".PadRight(15)}");
+                Console.WriteLine($"{".:Department:.".PadRight(20)}{".:Count:.".PadRight(15)}");
                 Console.WriteLine(new string('-', 35));
                 foreach (var t in teacher)
                 {
-                    Console.WriteLine($".:{t.Department.PadRight(16)} {t.TeacherCount} :.");
+                    Console.WriteLine($".:{t.Department.PadRight(16)} {t.TeacherCount} teachers :.");
                 }
                 General.Return();
             }

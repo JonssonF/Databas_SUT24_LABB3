@@ -1,10 +1,12 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
+using System.Data;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
     public class Case4
     {
+        private static readonly string _connectionString = "Data Source=localhost;Database=LabbSchool;Integrated Security=True; Trust Server Certificate=true;";
         public static void CaseFour()
         {
             bool CaseFour = true;
@@ -27,13 +29,12 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Console.Clear();
                         General.Heading();
                         ShowStaff();
-                        //Skolan vill kunna ta fram en översikt över all personal där det framgår
-                        //namn och vilka befattningar de har samt hur många år de har arbetat på skolan.
                         General.Return();
                         break;
                     case 2:
                         Console.Clear();
                         General.Heading();
+                        NewStaff();
                         //Administratören vill också ha möjlighet att spara ner ny personal. (SQL via ADO.Net)
                         General.Return();
                         break;
@@ -82,29 +83,74 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 
         public static void ShowStaff()
         {
-            string connectionString = "Data Source=localhost;Database=LabbSchool;Integrated Security=True; Trust Server Certificate=true;";
             string query = "SELECT FirstName + ' ' + LastName AS FullName, Role, DATEDIFF(YEAR, HireDate, GETDATE()) AS YearsAtSchool FROM Staff";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                connection.Open();
+                using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    try
                     {
-                        Console.WriteLine("Staff Overview:");
-                        Console.WriteLine("-----------------------------");
-                        while (reader.Read())
+                        using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            string fullName = reader["FullName"].ToString();
-                            string role = reader["Role"].ToString();
-                            int yearsAtSchool = (int)reader["YearsAtSchool"];
+                            Console.WriteLine("\nStaff information:");
+                            Console.WriteLine(new string('-', 55));
+                            Console.WriteLine($".:{"Full Name".PadRight(17)} | {"Position".PadRight(15)} | {"Years Worked:."}");
+                            Console.WriteLine(new string('-', 55));
+                            while (reader.Read())
+                            {
+                                string fullName = reader["FullName"].ToString();
+                                string role = reader["Role"].ToString();
+                                int yearsAtSchool = (int)reader["YearsAtSchool"];
 
-                            Console.WriteLine($"{fullName} | {role} | {yearsAtSchool} years");
+                                Console.WriteLine($".:{fullName.PadRight(17)} | {role.PadRight(15)} | {yearsAtSchool.ToString().PadLeft(3)} years");
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
                     }
                 }
             }
+        }
+
+        public static void NewStaff()
+        {
+            bool Registration = true;
+            while (Registration)
+            {
+                Console.Write("We will need some information before we continue.\n\n" +
+                    "What is your firstname? ");
+                string firstName = Console.ReadLine();
+                Console.Write("\nLastname: ");
+                string lastName = Console.ReadLine();
+                Console.Write("\nEmail adress: ");
+                string email = Console.ReadLine();
+                Console.WriteLine();
+                ADO.GetRoles();
+                Console.Write("\nWich role are you applying for: ");
+                string role = Console.ReadLine();
+                DateOnly? dob = null;
+                Console.Write("\nWhat is your date of birth? (YYYY-MM-DD)\nBirthdate: ");
+                if (DateOnly.TryParse(Console.ReadLine(), out DateOnly parsedDob))
+                {
+                    dob = parsedDob;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid formatting. Registration cancelled");
+                    Thread.Sleep(2000);
+                    Registration = false;
+                    Menu.Start();
+                }
+
+                int departmentId = 0;
+
+                //ADO.AddStaff(firstName, lastName, role, email, dob, departmentId);
+            }
+
         }
 
     }

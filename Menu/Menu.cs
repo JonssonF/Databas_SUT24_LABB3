@@ -18,7 +18,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     "1.Student\n" +
                     "2.Staff\n" +
                     "3.Departments\n" +
-                    "4.ADO.NET Section\n" +
+                    "4.ADO.NET Section\n\n" +
                     "5.Exit program");
                 int userChoice = General.Choice(5);
                 switch (userChoice)
