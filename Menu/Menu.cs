@@ -18,7 +18,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     "1.Student\n" +
                     "2.Staff\n" +
                     "3.Classes\n" +
-                    "4.Exit program.");
+                    "4.Exit program");
                 int userChoice = General.Choice(4);
                 switch (userChoice)
                 {
@@ -34,7 +34,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         break;
                     case 3:
                         Console.Clear();
-                        Console.WriteLine("Stay tuned for more. . .");
+                        Case3.CaseThree();
                         Console.ReadLine();
                         break;
                     case 4:

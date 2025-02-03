@@ -51,5 +51,12 @@
             Console.WriteLine("\x1b[3J");
             Console.Clear();
         }
+
+        public static void Return()
+        {
+            Console.Write("\n\nPress any key to return to the menu.");
+            Console.ReadKey();
+            General.ClearAll();
+        }
     }
 }

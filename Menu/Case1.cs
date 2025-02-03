@@ -3,7 +3,7 @@ using System;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
-    public class Case1
+    public class Case1 // Students
     {
         public static void CaseOne()
         {
@@ -12,10 +12,10 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             {
                 General.Heading();
                 Console.WriteLine($"\nWelcome to the student section, what can i help you with:\n" +
-                    "\n1. List all students." +
-                    "\n2. Information about specific student." +
-                    "\n3. Students by class." +
-                    "\n4. Return to main menu.");
+                    "\n1. List all students" +
+                    "\n2. Information about specific student" +
+                    "\n3. Students by class" +
+                    "\n4. Return to main menu");
                 int userChoice = General.Choice(4);
                 switch (userChoice)
                 {
@@ -51,6 +51,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 students = SortStudents(students);
                
                 Console.Clear();
+                General.Heading();
+
                 Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}");
                 Console.WriteLine(new string('-',35));
                 
@@ -61,9 +63,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"{student.FirstName.PadRight(15)}" +
                         $"{student.LastName.PadRight(15)}");
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                General.ClearAll();
+                General.Return();
             }
         }
 
@@ -71,6 +71,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
         {
             using (var context = new LabbSchoolContext())
             {
+                General.Heading();
                 Console.Write("Please write the specific ID of the student you would like to find.\n\nStudent ID: ");
                 string userInputString = Console.ReadLine();
 
@@ -83,6 +84,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Console.WriteLine("We have a match!");
                         Thread.Sleep(1500);
                         Console.Clear();
+                        General.Heading();
                         Console.WriteLine(
                             $".:ID: {specStudent.StudentId}\n" +
                             $".:Firstname: {specStudent.FirstName}\n" +
@@ -97,9 +99,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                                 $"If you are unsure of the ID, feel free to look at the student list.");
                     }
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                Console.Clear();
+                General.Return();
             }
         }
 
@@ -127,7 +127,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
                 Console.Write($"\nOption: ");
                 string option = Console.ReadLine();
-                //Console.Write($"{option}\n");
                 General.Process();
                 Console.Clear();
 
@@ -157,14 +156,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Console.WriteLine($"Sorry i could not find what you were searching for.\n" +
                             $"If you are unsure of the classname, feel free to look at the list and try again.");
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                Console.Clear();
+                General.Return();
             }
         }
 
         public static IQueryable<Student> SortStudents(IQueryable<Student> students)
         {
+                General.Heading();
                 Console.Write("How would you like to sort the students:\n1. By firstname\n2. By lastname \nOption:");
                 int sortChoice = General.Choice(2);
                 Console.Write(sortChoice);

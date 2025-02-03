@@ -15,7 +15,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     "\n1. List all employees." +
                     "\n2. Add new employee." +
                     "\n3. Return to main menu.");
-                int userChoice = General.Choice(4);
+                int userChoice = General.Choice(3);
                 switch (userChoice)
                 {
                     case 1:
@@ -32,7 +32,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Menu.Start();
                         break;
                     default:
-                        Console.WriteLine("Plase try again. Make sure you write an integer between 1-4.");
+                        Console.WriteLine("Plase try again. Make sure you write an integer between 1-3.");
                         break;
                 }
             }
@@ -55,9 +55,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"{employee.LastName.PadRight(15)}" +
                         $"{employee.Role.PadRight(15)}");
                 }
-                Console.Write("\n\nPress any key to return to the menu.");
-                Console.ReadKey();
-                Console.Clear();
+                General.Return();
             }
         }
 
@@ -141,9 +139,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Console.WriteLine(new string('-', 55));
                     Console.WriteLine($"\nWelcome to our team {firstName}!\nI hope you will enjoy it here at our school.");
 
-                    Console.Write("\n\nPress any key to return to the menu.");
-                    Console.ReadKey();
-                    Console.Clear();
+                    General.Return();
                 }
             }
             catch (Exception ex) 

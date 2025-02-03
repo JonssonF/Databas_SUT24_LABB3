@@ -432,3 +432,24 @@ VALUES
 --TEST TO VISUAL
 --TEST TO AZURE
 SELECT * FROM Staff;
+
+
+CREATE TABLE Department (
+    DepartmentId INT PRIMARY KEY IDENTITY(1,1),
+    DepartmentName VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE Staff
+ADD Department_Id INT NULL,
+FOREIGN KEY (Department_Id) REFERENCES Department(DepartmentId);
+
+INSERT INTO Department (DepartmentName)
+VALUES
+('Administration'),
+('7th Grade'),
+('8th Grade'),
+('9th Grade'),
+('Maintenance'),
+('Cafeteria'),
+('IT-Department'),
+('Counseling');
