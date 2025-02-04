@@ -10,7 +10,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
         public static void ShowStaff()
         {
             string query = @"
-                    SELECT 
+                    SELECT
+                    s.StaffId,
                     s.FirstName + ' ' + LastName AS FullName,
                     r.RoleName AS Role,
                     d.DepartmentName AS Department,
@@ -29,19 +30,20 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             Console.WriteLine("\nStaff information:");
-                            Console.WriteLine(new string('-', 73));
-                            Console.WriteLine($".:{"Full Name".PadRight(17)} | {"Position".PadRight(15)} | {"Department".PadRight(15)} | {"Years Worked:."}");
-                            Console.WriteLine(new string('-', 73));
+                            Console.WriteLine(new string('-', 81));
+                            Console.WriteLine($".:{"ID".PadRight(5)} | {"Full Name".PadRight(17)} | {"Position".PadRight(15)} | {"Department".PadRight(15)} | {"Years Worked:.|"}");
+                            Console.WriteLine(new string('-', 81));
                             while (reader.Read())
                             {
+                                int staffId = (int)reader["StaffId"];
                                 string fullName = reader["FullName"].ToString();
                                 string role = reader["Role"].ToString();
                                 string department = reader["Department"].ToString();
                                 int yearsAtSchool = (int)reader["YearsAtSchool"];
 
-                                Console.WriteLine($".:{fullName.PadRight(17)} | {role.PadRight(15)} | {department.PadRight(15)} | {yearsAtSchool.ToString().PadLeft(3)} {"years".PadRight(5)}      |");
+                                Console.WriteLine($".:{staffId.ToString().PadRight(5)} | {fullName.PadRight(17)} | {role.PadRight(15)} | {department.PadRight(15)} | {yearsAtSchool.ToString().PadLeft(3)} {"years".PadRight(5)}      |");
                             }
-                            Console.WriteLine(new string('-', 73));
+                            Console.WriteLine(new string('-', 81));
                         }
                     }
                     catch (Exception ex)
@@ -56,7 +58,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
         {
             string query = "INSERT INTO Staff (FirstName, LastName, Role_Id, HireDate, Email, DoB, Department_Id)" +
                            "VALUES (@FirstName, @LastName, @RoleId, @HireDate, @Email, @DoB, @DepartmentId)";
-                            
+
             using SqlConnection connection = new SqlConnection(_connectionString);
             {
                 connection.Open();
@@ -71,7 +73,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                     command.Parameters.AddWithValue("@DepartmentId", departmentId);
 
                     int rowsAffected = command.ExecuteNonQuery();
-                    Console.WriteLine(rowsAffected > 0 
+                    Console.WriteLine(rowsAffected > 0
                         ? "New staff added, welcome to R'n'R HighSchool."
                         : "Failed to add staff.");
                 }
@@ -154,6 +156,82 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                 }
             }
 
+        }
+        public static void DeleteStaff(int staffId)
+        {
+            string query = "DELETE FROM Staff WHERE StaffId = @StaffId";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@StaffId", staffId);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine($"Staff with ID {staffId} has been succesfully removed.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No staff found with that ID, please make sure you select a valid ID from the list above.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+        }
+
+        public static void SalaryOnDepartments()
+        {
+            string query = @"
+             SELECT
+                d.DepartmentName,
+                SUM(d.Salary) AS TotalSalary
+             FROM
+                Staff s
+             JOIN
+                Department d ON s.Department_Id = d.DepartmentId
+             GROUP BY
+                d.DepartmentName
+             ORDER BY
+                TotalSalary DESC;";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            Console.WriteLine("\nTotal salary payout for each department:");
+                            Console.WriteLine(new string('-', 40));
+                            while (reader.Read())
+                            {
+                                string departmentName = reader["DepartmentName"].ToString();
+                                decimal totalSalary = (decimal)reader["TotalSalary"];
+
+                                Console.WriteLine($"Department: {departmentName}");
+                                Console.WriteLine($"Total Salary: {totalSalary:C}");
+                                Console.WriteLine(new string('-', 35));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
     }
 }

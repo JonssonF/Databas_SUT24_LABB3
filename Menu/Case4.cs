@@ -20,8 +20,9 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     "\n5. Average salary by department" +
                     "\n6. Show specific student information" +
                     "\n7. Grade a student" +
-                    "\n8. Return to main menu");
-                int userChoice = General.Choice(8);
+                    "\n8. Remove staff" +
+                    "\n9. Return to main menu");
+                int userChoice = General.Choice(9);
                 switch (userChoice)
                 {
                     case 1:
@@ -46,6 +47,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     case 4:
                         Console.Clear();
                         General.Heading();
+                        ADO.SalaryOnDepartments();
                         //Hur mycket betalar respektive avdelning ut i lön varje månad? (SQL via ADO.Net)
                         General.Return();
                         break;
@@ -69,14 +71,28 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         break;
                     case 8:
                         Console.Clear();
+                        General.Heading();
+                        ADO.ShowStaff();
+                        int deleteId = RemoveStaff();
+                        ADO.DeleteStaff(deleteId);
+                        General.Return();
+                        break;
+                    case 9:
+                        Console.Clear();
                         CaseFour = false;
                         Menu.Start();
                         break;
                     default:
-                        Console.WriteLine("Please try again. Make sure you write an integer between 1-8.");
+                        Console.WriteLine("Please try again. Make sure you write an integer between 1-9.");
                         break;
                 }
             }
+        }
+        public static int RemoveStaff()
+        {
+            Console.WriteLine("\nEnter the ID of the staff you would like to remove.");
+            int deleteId = Convert.ToInt32(Console.ReadLine());
+            return deleteId;
         }
 
         public static void NewStaff()
@@ -142,10 +158,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
                 Registration = false;
                 ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
-                General.Return();
             }
-
         }
-
     }
 }
