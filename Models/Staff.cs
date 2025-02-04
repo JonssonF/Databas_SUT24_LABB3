@@ -15,15 +15,17 @@ public partial class Staff
 
     public DateOnly? DoB { get; set; }
 
-    public string? Role { get; set; }
-
     public int? DepartmentId { get; set; }
 
     public DateOnly HireDate { get; set; }
 
+    public int? RoleId { get; set; }
+
     public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
 
     public virtual Department? Department { get; set; }
+
+    public virtual Role? Role { get; set; }
 
     public virtual ICollection<Subject> Subjects { get; set; } = new List<Subject>();
 }

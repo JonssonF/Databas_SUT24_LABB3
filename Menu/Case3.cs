@@ -44,7 +44,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             {
                 General.Heading();
                 var teacher = context.Staff
-                    .Where(s => s.Role == "Teacher" && s.DepartmentId != null)
+                    .Where(s => s.Role.RoleName == "Teacher" && s.DepartmentId != null)
                     .GroupBy(s => s.Department.DepartmentName)
                     .Select(g => new
                     {

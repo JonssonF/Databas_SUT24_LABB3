@@ -21,6 +21,8 @@ public partial class LabbSchoolContext : DbContext
 
     public virtual DbSet<Grade> Grades { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<Staff> Staff { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }
@@ -104,6 +106,17 @@ public partial class LabbSchoolContext : DbContext
                 .HasConstraintName("FK__Grade__Subject_I__49C3F6B7");
         });
 
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1ADBE27E56");
+
+            entity.ToTable("Role");
+
+            entity.Property(e => e.RoleName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Staff>(entity =>
         {
             entity.HasKey(e => e.StaffId).HasName("PK__Staff__96D4AB17FC049217");
@@ -119,13 +132,15 @@ public partial class LabbSchoolContext : DbContext
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Role)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.RoleId).HasColumnName("Role_Id");
 
             entity.HasOne(d => d.Department).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.DepartmentId)
                 .HasConstraintName("FK__Staff__Departmen__5CD6CB2B");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Staff)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK_Staff_Role");
         });
 
         modelBuilder.Entity<Student>(entity =>

@@ -4,9 +4,8 @@ using System.Data;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
-    public class Case4
+    public class Case4 // ADO Section
     {
-        private static readonly string _connectionString = "Data Source=localhost;Database=LabbSchool;Integrated Security=True; Trust Server Certificate=true;";
         public static void CaseFour()
         {
             bool CaseFour = true;
@@ -28,14 +27,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     case 1:
                         Console.Clear();
                         General.Heading();
-                        ShowStaff();
+                        ADO.ShowStaff();
                         General.Return();
                         break;
                     case 2:
                         Console.Clear();
                         General.Heading();
                         NewStaff();
-                        //Administratören vill också ha möjlighet att spara ner ny personal. (SQL via ADO.Net)
                         General.Return();
                         break;
                     case 3:
@@ -81,41 +79,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             }
         }
 
-        public static void ShowStaff()
-        {
-            string query = "SELECT FirstName + ' ' + LastName AS FullName, Role, DATEDIFF(YEAR, HireDate, GETDATE()) AS YearsAtSchool FROM Staff";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                using (SqlCommand cmd = new SqlCommand(query, connection))
-                {
-                    try
-                    {
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            Console.WriteLine("\nStaff information:");
-                            Console.WriteLine(new string('-', 55));
-                            Console.WriteLine($".:{"Full Name".PadRight(17)} | {"Position".PadRight(15)} | {"Years Worked:."}");
-                            Console.WriteLine(new string('-', 55));
-                            while (reader.Read())
-                            {
-                                string fullName = reader["FullName"].ToString();
-                                string role = reader["Role"].ToString();
-                                int yearsAtSchool = (int)reader["YearsAtSchool"];
-
-                                Console.WriteLine($".:{fullName.PadRight(17)} | {role.PadRight(15)} | {yearsAtSchool.ToString().PadLeft(3)} years");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-            }
-        }
-
         public static void NewStaff()
         {
             bool Registration = true;
@@ -129,11 +92,9 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 Console.Write("\nEmail adress: ");
                 string email = Console.ReadLine();
                 Console.WriteLine();
-                ADO.GetRoles();
-                Console.Write("\nWich role are you applying for: ");
-                string role = Console.ReadLine();
+
                 DateOnly? dob = null;
-                Console.Write("\nWhat is your date of birth? (YYYY-MM-DD)\nBirthdate: ");
+                Console.Write("What is your date of birth? (YYYY-MM-DD)\nBirthdate: ");
                 if (DateOnly.TryParse(Console.ReadLine(), out DateOnly parsedDob))
                 {
                     dob = parsedDob;
@@ -144,11 +105,44 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Thread.Sleep(2000);
                     Registration = false;
                     Menu.Start();
+                    return;
                 }
+                Console.WriteLine();
 
-                int departmentId = 0;
+                int roleId = ADO.GetRoles();
 
-                //ADO.AddStaff(firstName, lastName, role, email, dob, departmentId);
+                if (roleId == -1)
+                {
+                    Console.WriteLine("Something went wrong while selecting role.");
+                    General.Return();
+                    return;
+                }           
+
+                int departmentId = ADO.DepartmentId(roleId);
+                if (roleId == 6)
+                {
+                    Console.Write("\nSince you are applying as a teacher, which grade are you teaching?\n" +
+                        "1. 7th Grade\n" +
+                        "2. 8th Grade\n" +
+                        "3. 9th Grade\n" +
+                        "Option: ");
+                    int gradeChoice;
+                    while (true)
+                    {
+                        if(int.TryParse(Console.ReadLine(), out gradeChoice))
+                        {
+                            departmentId = gradeChoice + 1;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid grade choice, please choose between 7, 8 or 9.");
+                        }
+                    }
+                }
+                ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
+                Registration = false;
+                General.Return();
             }
 
         }
