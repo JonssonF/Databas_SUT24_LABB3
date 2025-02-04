@@ -129,7 +129,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     int gradeChoice;
                     while (true)
                     {
-                        if(int.TryParse(Console.ReadLine(), out gradeChoice))
+                        if(int.TryParse(Console.ReadLine(), out gradeChoice) && gradeChoice >= 1 && gradeChoice <= 3)
                         {
                             departmentId = gradeChoice + 1;
                             break;
@@ -140,8 +140,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         }
                     }
                 }
-                ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
                 Registration = false;
+                ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
                 General.Return();
             }
 
