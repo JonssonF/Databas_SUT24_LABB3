@@ -1,10 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic;
 using System.Data;
+using System.Diagnostics;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
-    public class Case4 // ADO Section
+    public class Case4 //ADO relatead methods.
     {
         public static void CaseFour()
         {
@@ -12,16 +14,14 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             while (CaseFour)
             {
                 General.Heading();
-                Console.WriteLine($"\nWelcome to the student section, what can i help you with:\n" +
+                Console.WriteLine($"" +
                     "\n1. Show staff information" +
-                    "\n2. Add new staff" +
-                    "\n3. Show grade for specific student" +
-                    "\n4. Salary by department" +
-                    "\n5. Average salary by department" +
-                    "\n6. Show specific student information" +
-                    "\n7. Grade a student" +
-                    "\n8. Remove staff" +
-                    "\n9. Return to main menu");
+                    "\n2. Add staff" +
+                    "\n3. Remove staff" +
+                    "\n4. Salary Statistics" +
+                    "\n5. Show student information" +
+                    "\n6. Grade a student" +
+                    "\n7. Return to main menu");
                 int userChoice = General.Choice(9);
                 switch (userChoice)
                 {
@@ -40,53 +40,60 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     case 3:
                         Console.Clear();
                         General.Heading();
-                        //Vi vill kunna ta fram alla betyg för en elev i varje kurs/ämne de läst och vi vill kunna
-                        //se vilken lärare som satt betygen, vi vill också se vilka datum betygen satts. (SQL via ADO.Net)
+                        ADO.ShowStaff();
+                        RemoveStaff();
                         General.Return();
                         break;
                     case 4:
                         Console.Clear();
                         General.Heading();
-                        ADO.SalaryDepartment("Total");
+                        SalarySelection();
                         General.Return();
                         break;
                     case 5:
-                        Console.Clear();
+                        General.ClearAll();
                         General.Heading();
-                        ADO.SalaryDepartment("Average");
-                        General.Return();
+                        FetchStudent();
+                        General.ClearAll();
                         break;
                     case 6:
-                        Console.Clear();
-                        FetchStudent();
+                        General.ClearAll();
+                        General.Heading();
+                        Grade();
                         General.Return();
                         break;
                     case 7:
-                        Console.Clear();
-                        General.Heading();
-                        //Sätt betyg på en elev genom att använda Transactions ifall något går fel. (SQL via ADO.Net)
-                        General.Return();
-                        break;
-                    case 8:
-                        Console.Clear();
-                        General.Heading();
-                        ADO.ShowStaff();
-                        RemoveStaff();
-                        General.Return();
-                        break;
-                    case 9:
                         Console.Clear();
                         CaseFour = false;
                         Menu.Start();
                         break;
                     default:
-                        Console.WriteLine("Please try again. Make sure you write an integer between 1-9.");
+                        Console.WriteLine("Please try again. Make sure you write an integer between 1-7.");
                         break;
                 }
             }
         }
+        public static void SalarySelection()
+        {
+            General.ClearAll();
+            General.Heading();
+            Console.WriteLine("\n1.Total Salary per Department");
+            Console.WriteLine("2.Average Salary per Department");
+            Console.Write("Option: ");
+            int salarySelect = General.Choice(2);
+            switch (salarySelect)
+            {
+                case 1:
+                    ADO.SalaryDepartment("Total");
+                    break;
+                case 2:
+                    ADO.SalaryDepartment("Average");
+                    break;
+            }
+        }
         public static void FetchStudent()
         {
+            General.ClearAll();
             Case1.GetStudents();
             Console.WriteLine("Enter student ID for more detailed information.");
             int studentId = Convert.ToInt32(Console.ReadLine());
@@ -157,12 +164,56 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         }
                         else
                         {
-                            Console.WriteLine("Invalid grade choice, please choose between 7, 8 or 9.");
+                            Console.WriteLine("Invalid grade choice, please choose between 1.(7), 2.(8) or 3.(9)");
                         }
                     }
                 }
                 Registration = false;
                 ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
+            }
+        }
+
+        public static void Grade()
+        {
+            using (var context = new LabbSchoolContext())
+            {
+                int studentId;               
+                var validStudentIds = context.Students.Select(s => s.StudentId).ToList();              
+                do
+                {
+                    Console.WriteLine("\nPlease enter the ID of the student you would like to grade.");
+                    Console.Write("Student ID: ");
+                    bool isValid = int.TryParse(Console.ReadLine(), out studentId);
+
+                    if (!isValid || !validStudentIds.Contains(studentId))
+                    {
+                        Console.WriteLine("Invalid student ID. Please enter a valid ID.");
+                    }
+                }
+                while (!validStudentIds.Contains(studentId));
+
+                Console.WriteLine("\n\nPlease enter the ID of the subject you would like to grade.");
+                Console.WriteLine("1. Math");
+                Console.WriteLine("2. English");
+                Console.WriteLine("3. Science");
+                Console.WriteLine("4. History");
+                Console.WriteLine("5. Art");
+                Console.WriteLine("6. Physical Education");
+                Console.Write("Subject ID: ");
+                int subjectId = General.Choice(6);
+
+                string[] validGrades = { "A", "B", "C", "D", "E", "F" };
+                string grade;
+                do
+                {
+                    Console.WriteLine("\n\nEnter grade from A to F.");
+                    Console.Write("Grade: ");
+                    grade = Console.ReadLine().ToUpper(); // Gör input till versaler för att matcha validering
+                }
+                while (!validGrades.Contains(grade));
+
+
+                ADO.SetGrade(studentId, subjectId, grade);
             }
         }
     }

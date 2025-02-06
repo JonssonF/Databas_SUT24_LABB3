@@ -1,4 +1,5 @@
-﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+﻿using FREDRIK_JONSSON_SUT24_LABB3.Menu;
+using FREDRIK_JONSSON_SUT24_LABB3.Models;
 using Microsoft.Data.SqlClient;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3
@@ -262,7 +263,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                                     string email = reader.GetString(reader.GetOrdinal("Email"));
                                     string className = reader.GetString(reader.GetOrdinal("ClassName"));
                                     bool firstInfo = true;
-                                    if (firstInfo)
+                                    if (firstInfo == true)
                                     {
                                         Console.WriteLine($".:ID: {id}");
                                         Console.WriteLine($".:Name: {firstName} {lastName}");
@@ -270,22 +271,21 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                                         Console.WriteLine($".:Email: {email}");
                                         Console.WriteLine($".:Class: {className}");
                                         Console.WriteLine($"\n\nWould you like to see even more information about {firstName}?");
+                                        Console.WriteLine("1. Yes");
+                                        Console.WriteLine("2. No i would like to return to the menu");
                                     }
-                                    firstInfo = false;
 
-                                    Console.WriteLine("1. Yes");
-                                    Console.WriteLine("2. No i would like to return to the menu");
                                     int moreInfo = General.Choice(2);
                                     switch (moreInfo)
                                     {
                                         case 1:
+                                            firstInfo = false;
                                             Console.WriteLine(new string('-', 50));
                                             MoreInfo(studentId);
                                             break;
                                         case 2:
-                                            General.ClearAll();
-                                            General.Return();
-                                            break;
+                                            firstInfo = false;
+                                            return;
                                     }
                                 }
                             }
@@ -332,6 +332,8 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                                 Console.WriteLine($".:Grade Date: {gradeDate.ToShortDateString()}");
                                 Console.WriteLine(new string('-', 50));
                             }
+                            General.Return();
+                            Case4.CaseFour();
                         }
                     }
                 }
@@ -340,6 +342,50 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                     Console.WriteLine("An error occured when trying to fetch information about student:" + ex.Message);
                 }
             }
+        }
+
+        
+
+        public static void SetGrade(int studentId, int subjectId, string grade)
+        {
+            string query = "" +
+                "INSERT INTO Grade (Student_Id, Subject_Id, Grade, DateAwarded)" +
+                "VALUES (@StudentId, @SubjectId, @Grade, @DateAwarded)";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+
+                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@StudentId", studentId);
+                        command.Parameters.AddWithValue("@SubjectId", subjectId);
+                        command.Parameters.AddWithValue("@Grade", grade);
+                        command.Parameters.AddWithValue("@DateAwarded", DateTime.Now);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected == 0) 
+                        {
+                            throw new Exception("Could not register grade.");
+                        }
+
+                        transaction.Commit();
+                        Console.WriteLine("Grade registered.");
+                        General.Return();
+                        Case4.CaseFour();
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
         }
     }
 }
