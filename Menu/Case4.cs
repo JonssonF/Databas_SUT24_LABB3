@@ -47,20 +47,18 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     case 4:
                         Console.Clear();
                         General.Heading();
-                        ADO.SalaryOnDepartments();
-                        //Hur mycket betalar respektive avdelning ut i lön varje månad? (SQL via ADO.Net)
+                        ADO.SalaryDepartment("Total");
                         General.Return();
                         break;
                     case 5:
                         Console.Clear();
                         General.Heading();
-                        //Hur mycket är medellönen för de olika avdelningarna? (SQL via ADO.Net)
+                        ADO.SalaryDepartment("Average");
                         General.Return();
                         break;
                     case 6:
                         Console.Clear();
-                        General.Heading();
-                        //Skapa en Stored Procedure som tar emot ett Id och returnerar viktig information om den elev som är registrerad med aktuellt Id. (SQL via ADO.Net)
+                        FetchStudent();
                         General.Return();
                         break;
                     case 7:
@@ -73,8 +71,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         Console.Clear();
                         General.Heading();
                         ADO.ShowStaff();
-                        int deleteId = RemoveStaff();
-                        ADO.DeleteStaff(deleteId);
+                        RemoveStaff();
                         General.Return();
                         break;
                     case 9:
@@ -88,11 +85,19 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
             }
         }
-        public static int RemoveStaff()
+        public static void FetchStudent()
+        {
+            Case1.GetStudents();
+            Console.WriteLine("Enter student ID for more detailed information.");
+            int studentId = Convert.ToInt32(Console.ReadLine());
+            ADO.StudentInformation(studentId);
+        }
+
+        public static void RemoveStaff()
         {
             Console.WriteLine("\nEnter the ID of the staff you would like to remove.");
             int deleteId = Convert.ToInt32(Console.ReadLine());
-            return deleteId;
+            ADO.DeleteStaff(deleteId);
         }
 
         public static void NewStaff()

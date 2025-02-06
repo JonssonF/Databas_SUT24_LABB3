@@ -83,7 +83,7 @@ public partial class LabbSchoolContext : DbContext
 
         modelBuilder.Entity<Grade>(entity =>
         {
-            entity.HasKey(e => e.GradeId).HasName("PK__Grade__54F87A5770105BE9");
+            entity.HasKey(e => e.GradeId).HasName("PK__Grade__54F87A57A0DAC11F");
 
             entity.ToTable("Grade");
 
@@ -98,12 +98,12 @@ public partial class LabbSchoolContext : DbContext
             entity.HasOne(d => d.Student).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Grade__Student_I__48CFD27E");
+                .HasConstraintName("FK__Grade__Student_I__72C60C4A");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.SubjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Grade__Subject_I__49C3F6B7");
+                .HasConstraintName("FK__Grade__Subject_I__73BA3083");
         });
 
         modelBuilder.Entity<Role>(entity =>

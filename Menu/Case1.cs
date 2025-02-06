@@ -23,14 +23,17 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     case 1:
                         Console.Clear();
                         GetStudents();
+                        General.Return();
                         break;
                     case 2:
                         Console.Clear();
                         SpecifyStudent();
+                        General.Return();
                         break;
                     case 3:
                         Console.Clear();
                         ByClass();
+                        General.Return();
                         break;
                     case 4:
                         Console.Clear();
@@ -64,7 +67,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"{student.FirstName.PadRight(15)}" +
                         $"{student.LastName.PadRight(15)}");
                 }
-                General.Return();
+                
             }
         }
 
@@ -104,7 +107,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                                 $"If you are unsure of the ID, feel free to look at the student list.");
                     }
                 }
-                General.Return();
+                
             }
         }
 
@@ -164,7 +167,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Console.WriteLine($"Sorry i could not find what you were searching for.\n" +
                             $"If you are unsure of the classname, feel free to look at the list and try again.");
                 }
-                General.Return();
+                
             }
         }
 

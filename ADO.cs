@@ -53,7 +53,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                 }
             }
         }
-
         public static void AddStaff(string firstName, string lastName, int roleId, string email, DateOnly? dob, int departmentId)
         {
             string query = "INSERT INTO Staff (FirstName, LastName, Role_Id, HireDate, Email, DoB, Department_Id)" +
@@ -108,7 +107,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                 }
             }
         }
-
         public static int GetRoles()
         {
             string query = "SELECT RoleId, RoleName FROM Role";
@@ -155,7 +153,6 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                     return -1;
                 }
             }
-
         }
         public static void DeleteStaff(int staffId)
         {
@@ -188,13 +185,14 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
             }
 
         }
-
-        public static void SalaryOnDepartments()
+        public static void SalaryDepartment(string type = "Total")
         {
-            string query = @"
+            string aggregateFunction = type == "Average" ? "AVG(d.Salary)" : "SUM(d.Salary)";
+
+            string query = $@"
              SELECT
                 d.DepartmentName,
-                SUM(d.Salary) AS TotalSalary
+                {aggregateFunction} AS Salary
              FROM
                 Staff s
              JOIN
@@ -202,7 +200,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
              GROUP BY
                 d.DepartmentName
              ORDER BY
-                TotalSalary DESC;";
+                Salary DESC;";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -213,15 +211,16 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            Console.WriteLine("\nTotal salary payout for each department:");
+                            string label = type == "Average" ? "Average Salary" : "Total Salary";
+                            Console.WriteLine($"\n{label} for each department:");
                             Console.WriteLine(new string('-', 40));
                             while (reader.Read())
                             {
                                 string departmentName = reader["DepartmentName"].ToString();
-                                decimal totalSalary = (decimal)reader["TotalSalary"];
+                                decimal salary = (decimal)reader["Salary"];
 
                                 Console.WriteLine($"Department: {departmentName}");
-                                Console.WriteLine($"Total Salary: {totalSalary:C}");
+                                Console.WriteLine($"{label}: {salary:C}");
                                 Console.WriteLine(new string('-', 35));
                             }
                         }
@@ -230,6 +229,115 @@ namespace FREDRIK_JONSSON_SUT24_LABB3
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                }
+            }
+        }
+        public static void StudentInformation(int studentId)
+        {
+            string storedProcedure = "GetGradesByStudent";
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@StudentId", studentId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                General.ClearAll();
+                                General.Heading();
+                                Console.WriteLine($"\nInformation for student with ID:{studentId}");
+                                Console.WriteLine(new string('-', 50));
+                                while (reader.Read())
+                                {
+                                    string firstName = reader.GetString(reader.GetOrdinal("FirstName"));
+                                    int id = reader.GetInt32(reader.GetOrdinal("StudentId"));
+                                    string lastName = reader.GetString(reader.GetOrdinal("LastName"));
+                                    DateTime dob = reader.GetDateTime(reader.GetOrdinal("BirthDate"));
+                                    string email = reader.GetString(reader.GetOrdinal("Email"));
+                                    string className = reader.GetString(reader.GetOrdinal("ClassName"));
+                                    bool firstInfo = true;
+                                    if (firstInfo)
+                                    {
+                                        Console.WriteLine($".:ID: {id}");
+                                        Console.WriteLine($".:Name: {firstName} {lastName}");
+                                        Console.WriteLine($".:Date of Birth: {dob.ToShortDateString()}");
+                                        Console.WriteLine($".:Email: {email}");
+                                        Console.WriteLine($".:Class: {className}");
+                                        Console.WriteLine($"\n\nWould you like to see even more information about {firstName}?");
+                                    }
+                                    firstInfo = false;
+
+                                    Console.WriteLine("1. Yes");
+                                    Console.WriteLine("2. No i would like to return to the menu");
+                                    int moreInfo = General.Choice(2);
+                                    switch (moreInfo)
+                                    {
+                                        case 1:
+                                            Console.WriteLine(new string('-', 50));
+                                            MoreInfo(studentId);
+                                            break;
+                                        case 2:
+                                            General.ClearAll();
+                                            General.Return();
+                                            break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Could not find a student with the requested ID.");
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occured when trying to fetch information about student:" + ex.Message);
+                }
+            }
+        }
+        public static void MoreInfo(int studentId)
+        {
+            string storedProcedure = "GetGradesByStudent";
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@StudentId", studentId);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string grade = reader.GetString(reader.GetOrdinal("Grade"));
+                                string subjectName = reader.GetString(reader.GetOrdinal("SubjectName"));
+                                DateTime gradeDate = reader.GetDateTime(reader.GetOrdinal("GradeDate"));
+                                int teacherid = reader.GetInt32(reader.GetOrdinal("TeacherId"));
+                                string teacherFirstName = reader.GetString(reader.GetOrdinal("TeacherFirstName"));
+                                string teacherLastName = reader.GetString(reader.GetOrdinal("TeacherLastName"));
+
+                                Console.WriteLine($".:Grade: {grade}");
+                                Console.WriteLine($".:Subject: {subjectName}");
+                                Console.WriteLine($".:Teacher: {teacherFirstName} {teacherLastName}");
+                                Console.WriteLine($".:Grade Date: {gradeDate.ToShortDateString()}");
+                                Console.WriteLine(new string('-', 50));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occured when trying to fetch information about student:" + ex.Message);
                 }
             }
         }
