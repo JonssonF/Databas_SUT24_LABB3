@@ -21,6 +21,8 @@ public partial class LabbSchoolContext : DbContext
 
     public virtual DbSet<Grade> Grades { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<Staff> Staff { get; set; }
 
     public virtual DbSet<Student> Students { get; set; }
@@ -81,7 +83,7 @@ public partial class LabbSchoolContext : DbContext
 
         modelBuilder.Entity<Grade>(entity =>
         {
-            entity.HasKey(e => e.GradeId).HasName("PK__Grade__54F87A5770105BE9");
+            entity.HasKey(e => e.GradeId).HasName("PK__Grade__54F87A57A0DAC11F");
 
             entity.ToTable("Grade");
 
@@ -96,12 +98,23 @@ public partial class LabbSchoolContext : DbContext
             entity.HasOne(d => d.Student).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.StudentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Grade__Student_I__48CFD27E");
+                .HasConstraintName("FK__Grade__Student_I__72C60C4A");
 
             entity.HasOne(d => d.Subject).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.SubjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Grade__Subject_I__49C3F6B7");
+                .HasConstraintName("FK__Grade__Subject_I__73BA3083");
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.RoleId).HasName("PK__Role__8AFACE1ADBE27E56");
+
+            entity.ToTable("Role");
+
+            entity.Property(e => e.RoleName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Staff>(entity =>
@@ -119,13 +132,15 @@ public partial class LabbSchoolContext : DbContext
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Role)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.RoleId).HasColumnName("Role_Id");
 
             entity.HasOne(d => d.Department).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.DepartmentId)
                 .HasConstraintName("FK__Staff__Departmen__5CD6CB2B");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Staff)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("FK_Staff_Role");
         });
 
         modelBuilder.Entity<Student>(entity =>

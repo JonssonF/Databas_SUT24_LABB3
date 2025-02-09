@@ -1,4 +1,5 @@
 ﻿using FREDRIK_JONSSON_SUT24_LABB3.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
@@ -42,10 +43,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
         {
             using (var context = new LabbSchoolContext())
             {
-                var staff = context.Staff.AsQueryable();
+                var staff = context.Staff
+                    .Include(r => r.Role)
+                    .Include(d => d.Department)
+                    .AsQueryable();
                 Console.Clear();
-                Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}{".:Position:.".PadRight(20)}{".:Hired:.".PadRight(15)}");
-                Console.WriteLine(new string('-', 67));
+                Console.WriteLine($"{".:ID:.".PadRight(5)}{".:Firstname:.".PadRight(15)}{".:Lastname:.".PadRight(15)}{".:Position:.".PadRight(20)}{".:Department:.".PadRight(20)}{".:Hired:.".PadRight(15)}");
+                Console.WriteLine(new string('-', 85));
 
                 foreach (var employee in staff)
                 {
@@ -53,9 +57,10 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         $"  {employee.StaffId.ToString().PadRight(6)}" +
                         $"{employee.FirstName.PadRight(15)}" +
                         $"{employee.LastName.PadRight(15)}" +
-                        $"{employee.Role.PadRight(18)}" +
+                        $"{employee.Role.RoleName.ToString().PadRight(18)}" +
+                        $"{employee.Department.DepartmentName.PadRight(18)}" +
                         $"{employee.HireDate.ToString().PadRight(15)}");
-                        Console.WriteLine(new string('-', 67));
+                        Console.WriteLine(new string('-', 85));
                 }
                 General.Return();
             }
@@ -107,33 +112,38 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         }
                     }
                     Console.WriteLine("\nWhich role will you have when you start your employment?");
-                    var staff = context.Staff.AsQueryable();
-                    var uniqueRoles = staff.Select(s => s.Role).Distinct();
+                    var roles = context.Roles.ToList();
                     Console.WriteLine(new string('-', 55));
-                    List<string> validRoles = new List<string>();
-                    foreach (var position in uniqueRoles)
+                    foreach (var r in roles)
                     {
-                        Console.WriteLine($"{position}.");
-                        validRoles.Add(position);
+                        Console.WriteLine($"{r.RoleId}: {r.RoleName}");
                     }
-                    string role = string.Empty;
-                    while (!validRoles.Contains(role))
-                    {
-                        Console.Write("\nRole: ");
-                        role = Console.ReadLine();
 
-                        if (!validRoles.Contains(role))
+                    int roleId = 0;
+                    Role selectedRole = null;
+                    while (selectedRole == null)
+                    {
+                        Console.Write("\nEnter Role ID: ");
+                        string roleInput = Console.ReadLine();
+
+                        if (int.TryParse(roleInput, out roleId))
                         {
-                            Console.WriteLine("Unvalid position. Choose from the list above and try again.");
+                            selectedRole = roles.FirstOrDefault(r => r.RoleId == roleId);
+                        }
+
+                        if (selectedRole == null)
+                        {
+                            Console.WriteLine("Invalid role ID. Please choose a valid role from the list.");
                         }
                     }
+
                     var newStaff = new Staff
                     {
                         FirstName = firstName,
                         LastName = lastName,
                         Email = email,
                         DoB = dob,
-                        Role = role
+                        RoleId = selectedRole.RoleId  
                     };
 
                     context.Staff.Add(newStaff);

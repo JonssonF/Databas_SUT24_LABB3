@@ -11,14 +11,13 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
             {
                 Console.Clear();
                 General.Heading();
-                Console.WriteLine("(BETA)-- This application is under development.\n\n");
-                Console.WriteLine("Hello and welcome to the School's data navigation system.");
-                Console.WriteLine($"In wich section do you seek knowledge:\n");
+                Console.WriteLine("\nHello and welcome to the School's data navigation system.");
+                Console.WriteLine($"In which section do you seek knowledge:\n");
                 Console.WriteLine(
                     "1.Student\n" +
                     "2.Staff\n" +
                     "3.Departments\n" +
-                    "4.ADO.NET Section\n\n" +
+                    "4.Admin - Section\n\n" +
                     "5.Exit program");
                 int userChoice = General.Choice(5);
                 switch (userChoice)
