@@ -6,11 +6,13 @@ using System.Diagnostics;
 
 namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
 {
-    public class Case4 //ADO relatead methods.
+    public class Case4 
     {
+        // This method presents a menu of options related to staff and student management using ADO.NET.
         public static void CaseFour()
         {
             bool CaseFour = true;
+            // Keep displaying the menu until the user chooses to return to the main menu.
             while (CaseFour)
             {
                 General.Heading();
@@ -22,49 +24,57 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     "\n5. Show student information" +
                     "\n6. Grade a student" +
                     "\n7. Return to main menu");
-                int userChoice = General.Choice(9);
+                int userChoice = General.Choice(7);
                 switch (userChoice)
                 {
                     case 1:
                         Console.Clear();
                         General.Heading();
+                        // Display staff information.
                         ADO.ShowStaff();
                         General.Return();
                         break;
                     case 2:
                         Console.Clear();
                         General.Heading();
+                        // Add new staff.
                         NewStaff();
                         General.Return();
                         break;
                     case 3:
                         Console.Clear();
                         General.Heading();
+                        // Display staff information for removal by ID.
                         ADO.ShowStaff();
+                        // Removes staff.
                         RemoveStaff();
                         General.Return();
                         break;
                     case 4:
                         Console.Clear();
                         General.Heading();
+                        //Displays salary statistics.
                         SalarySelection();
                         General.Return();
                         break;
                     case 5:
                         General.ClearAll();
                         General.Heading();
+                        // Fetch student information.
                         FetchStudent();
                         General.ClearAll();
                         break;
                     case 6:
                         General.ClearAll();
                         General.Heading();
+                        // Grade a student.
                         Grade();
                         General.Return();
                         break;
                     case 7:
                         Console.Clear();
                         CaseFour = false;
+                        // Return to the main menu.
                         Menu.Start();
                         break;
                     default:
@@ -73,6 +83,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 }
             }
         }
+        // Method that allows the user to select between total or average salary per department.
         public static void SalarySelection()
         {
             General.ClearAll();
@@ -91,25 +102,28 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     break;
             }
         }
+        // This method fetches and displays student information based on user-provided ID.
         public static void FetchStudent()
         {
             General.ClearAll();
+            //Displays all students with Entity Framework.
             Case1.GetStudents();
             Console.WriteLine("Enter student ID for more detailed information.");
             int studentId = Convert.ToInt32(Console.ReadLine());
             ADO.StudentInformation(studentId);
         }
-
+        // This method removes a staff member based on user-provided ID.
         public static void RemoveStaff()
         {
             Console.WriteLine("\nEnter the ID of the staff you would like to remove.");
             int deleteId = Convert.ToInt32(Console.ReadLine());
             ADO.DeleteStaff(deleteId);
         }
-
+        // This method handles the registration of new staff members.
         public static void NewStaff()
         {
             bool Registration = true;
+            // Continue registration until completed or cancelled.
             while (Registration)
             {
                 Console.Write("We will need some information before we continue.\n\n" +
@@ -144,9 +158,10 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     Console.WriteLine("Something went wrong while selecting role.");
                     General.Return();
                     return;
-                }           
-
+                }
+                // Get the department ID based on the role.
                 int departmentId = ADO.DepartmentId(roleId);
+                // Special case for teachers to select the grade they teach.
                 if (roleId == 6)
                 {
                     Console.Write("\nSince you are applying as a teacher, which grade are you teaching?\n" +
@@ -155,6 +170,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                         "3. 9th Grade\n" +
                         "Option: ");
                     int gradeChoice;
+                    // Ensure the grade choice is valid.
                     while (true)
                     {
                         if(int.TryParse(Console.ReadLine(), out gradeChoice) && gradeChoice >= 1 && gradeChoice <= 3)
@@ -169,15 +185,18 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                     }
                 }
                 Registration = false;
+                // Add the new staff member to the database.
                 ADO.AddStaff(firstName, lastName, roleId, email, dob, departmentId);
             }
         }
 
         public static void Grade()
         {
+            // Using EntityFramework to interact with the database.
             using (var context = new LabbSchoolContext())
             {
-                int studentId;               
+                int studentId;
+                // Get a list of valid student IDs from the database.
                 var validStudentIds = context.Students.Select(s => s.StudentId).ToList();              
                 do
                 {
@@ -208,7 +227,7 @@ namespace FREDRIK_JONSSON_SUT24_LABB3.Menu
                 {
                     Console.WriteLine("\n\nEnter grade from A to F.");
                     Console.Write("Grade: ");
-                    grade = Console.ReadLine().ToUpper(); // Gör input till versaler för att matcha validering
+                    grade = Console.ReadLine().ToUpper(); // Convert input to uppercase to match validation.
                 }
                 while (!validGrades.Contains(grade));
 
